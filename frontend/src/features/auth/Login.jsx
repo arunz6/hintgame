@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 const SESSION_KEY = "hintgame.session";
 const serverUrl = (
@@ -14,6 +15,7 @@ function readSession() {
 }
 
 function Login() {
+  const navigate = useNavigate();
   const [session, setSession] = useState(readSession);
   const [teamCode, setTeamCode] = useState("");
   const [password, setPassword] = useState("");
@@ -42,6 +44,7 @@ function Login() {
 
       localStorage.setItem(SESSION_KEY, JSON.stringify(result));
       setSession(result);
+      navigate("/levels", { replace: true });
     } catch (requestError) {
       setError(
         requestError instanceof TypeError
@@ -78,6 +81,9 @@ function Login() {
             <span>Current level</span>
             <strong>{session.team.currentLevel ?? 1}</strong>
           </div>
+          <Link className="submit-button link-button" to="/levels">
+            Continue to levels <span aria-hidden="true">→</span>
+          </Link>
           <button className="text-button" type="button" onClick={handleSignOut}>
             Sign out
           </button>
@@ -145,7 +151,7 @@ function Login() {
           <span aria-hidden="true">●</span> Your team progress stays together
         </p>
         <p className="auth-switch">
-          New to Hintgame? <a href="/register">Create a team</a>
+          New to Hintgame? <Link to="/register">Create a team</Link>
         </p>
       </section>
     </main>

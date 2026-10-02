@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const serverUrl = (
   import.meta.env.VITE_SERVER_URL || "http://localhost:3000"
@@ -78,9 +79,9 @@ function Register() {
           <p className="panel-copy">
             <strong>{registeredTeam}</strong> is ready. Sign in to continue.
           </p>
-          <a className="submit-button link-button" href="/login">
+          <Link className="submit-button link-button" to="/login">
             Go to sign in <span aria-hidden="true">→</span>
-          </a>
+          </Link>
         </section>
       </main>
     );
@@ -205,7 +206,7 @@ function Register() {
         </form>
 
         <p className="auth-switch">
-          Already have a team? <a href="/login">Sign in</a>
+          Already have a team? <Link to="/login">Sign in</Link>
         </p>
       </section>
     </main>

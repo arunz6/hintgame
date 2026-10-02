@@ -1,12 +1,7 @@
-import Login from "../features/auth/login";
-import Register from "../features/auth/Register";
+import AppRoutes from "./app.route.jsx";
 
 function App() {
-  if (window.location.pathname === "/register") {
-    return <Register />;
-  }
-
-  return <Login/>  ;
+  return <AppRoutes />;
 }
 
 export default App;
