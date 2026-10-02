@@ -77,6 +77,7 @@ export async function registerTeam(req, res) {
 	}
 }
 
+
 export async function loginTeam(req, res) {
 	try {
 		const { teamName, password } = req.body ?? {};
