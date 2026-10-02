@@ -7,7 +7,7 @@ const serverUrl = (
 
 function readSession() {
   try {
-    return JSON.parse(sessionStorage.getItem(SESSION_KEY) || "null");
+    return JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
   } catch {
     return null;
   }
@@ -15,7 +15,7 @@ function readSession() {
 
 function Login() {
   const [session, setSession] = useState(readSession);
-  const [teamName, setTeamName] = useState("");
+  const [teamCode, setTeamCode] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -30,7 +30,7 @@ function Login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ teamName: teamName.trim(), password }),
+        body: JSON.stringify({ teamCode: teamCode.trim().toUpperCase(), password }),
       });
       const result = await response.json();
 
@@ -40,7 +40,7 @@ function Login() {
         );
       }
 
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(result));
+      localStorage.setItem(SESSION_KEY, JSON.stringify(result));
       setSession(result);
     } catch (requestError) {
       setError(
@@ -54,7 +54,7 @@ function Login() {
   }
 
   function handleSignOut() {
-    sessionStorage.removeItem(SESSION_KEY);
+    localStorage.removeItem(SESSION_KEY);
     setSession(null);
     setPassword("");
   }
@@ -99,15 +99,15 @@ function Login() {
         </p>
 
         <form className="login-form" onSubmit={handleSubmit}>
-          <label htmlFor="team-name">Team name</label>
+          <label htmlFor="team-code">Team code</label>
           <input
-            id="team-name"
-            name="teamName"
+            id="team-code"
+            name="teamCode"
             type="text"
             autoComplete="username"
-            placeholder="Enter your team name"
-            value={teamName}
-            onChange={(event) => setTeamName(event.target.value)}
+            placeholder="Enter your team code"
+            value={teamCode}
+            onChange={(event) => setTeamCode(event.target.value.toUpperCase())}
             required
             disabled={isSubmitting}
           />

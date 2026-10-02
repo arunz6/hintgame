@@ -8,6 +8,9 @@ const startServer = async () => {
   if (!process.env.MONGODB_URI) {
     throw new Error("MONGODB_URI must be set before starting the backend.");
   }
+  if (!process.env.JWT_SECRET) {
+    throw new Error("JWT_SECRET must be set before starting the backend.");
+  }
 
   await mongoose.connect(process.env.MONGODB_URI);
 

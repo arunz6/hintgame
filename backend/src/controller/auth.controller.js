@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import jwt from "jsonwebtoken";
 import Team from "../model/user.schema.js";
 
 const publicTeam = (team) => ({
@@ -77,25 +78,38 @@ export async function registerTeam(req, res) {
 	}
 }
 
-
 export async function loginTeam(req, res) {
 	try {
-		const { teamName, password } = req.body ?? {};
-		if (typeof teamName !== "string" || typeof password !== "string") {
-			return res.status(400).json({ message: "teamName and password are required." });
+		const { teamCode, teamName, password } = req.body ?? {};
+		const loginCode = typeof teamCode === "string" ? teamCode.trim().toUpperCase() : "";
+		const legacyTeamName = typeof teamName === "string" ? teamName.trim() : "";
+		if ((!loginCode && !legacyTeamName) || typeof password !== "string") {
+			return res.status(400).json({ message: "teamCode and password are required." });
+		}
+		if (!process.env.JWT_SECRET) {
+			console.error("Team login failed: JWT_SECRET is not configured.");
+			return res.status(500).json({ message: "Login is not configured." });
 		}
 
-		const team = await Team.findOne({ teamName: teamName.trim() }).select("+password");
+		const team = await Team.findOne(
+			loginCode ? { teamCode: loginCode } : { teamName: legacyTeamName },
+		).select("+password");
 		if (!team || !(await team.comparePassword(password))) {
-			return res.status(401).json({ message: "Invalid team name or password." });
+			return res.status(401).json({ message: "Invalid team code or password." });
 		}
 
 		team.activeSessionId = randomUUID();
 		await team.save();
 
+		const token = jwt.sign(
+			{ id: team._id.toString(), sid: team.activeSessionId },
+			process.env.JWT_SECRET,
+			{ expiresIn: "2d" },
+		);
+
 		return res.status(200).json({
 			message: "Login successful.",
-			sessionId: team.activeSessionId,
+			token,
 			team: publicTeam(team),
 		});
 	} catch (error) {
