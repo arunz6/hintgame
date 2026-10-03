@@ -44,7 +44,10 @@ function Login() {
 
       localStorage.setItem(SESSION_KEY, JSON.stringify(result));
       setSession(result);
-      navigate("/levels", { replace: true });
+      navigate(
+        result.team?.role === "admin" ? "/admin/questions" : "/levels",
+        { replace: true },
+      );
     } catch (requestError) {
       setError(
         requestError instanceof TypeError

@@ -5,6 +5,7 @@ import Level from "../features/level/Level.jsx";
 import Login from "../features/auth/Login.jsx";
 import Question from "../features/questionot/Question.jsx";
 import Register from "../features/auth/Register.jsx";
+import AddQuestions from "../features/addquestions/addquestions.jsx";
 
 function RequireAuth() {
   let isAuthenticated = false;
@@ -19,6 +20,19 @@ function RequireAuth() {
   return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 }
 
+function RequireAdmin() {
+  let role = null;
+  try {
+    const session = JSON.parse(localStorage.getItem("hintgame.session") || "null");
+    role = session?.team?.role;
+  } catch {
+    role = null;
+  }
+
+  if (role === "admin") return <Outlet />;
+  return role ? <Navigate to="/levels" replace /> : <Navigate to="/login" replace />;
+}
+
 function AppRoutes() {
   return (
     <Routes>
@@ -30,6 +44,11 @@ function AppRoutes() {
         <Route path="/question" element={<Question />} />
         <Route path="/clue" element={<Clue />} />
         <Route path="/code" element={<Entercode />} />
+      </Route>
+      <Route element={<RequireAuth />}>
+        <Route element={<RequireAdmin />}>
+          <Route path="/admin/questions" element={<AddQuestions />} />
+        </Route>
       </Route>
       <Route path="*" element={<Navigate to="/login" replace />} />
     </Routes>
