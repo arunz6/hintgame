@@ -1,3 +1,4 @@
+import "./config/env.js";
 import express from "express";
 import cors from "cors";
 import teamRoutes from "./routes/user.routes.js";

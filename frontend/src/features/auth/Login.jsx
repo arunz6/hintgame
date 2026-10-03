@@ -156,6 +156,9 @@ function Login() {
         <p className="auth-switch">
           New to Hintgame? <Link to="/register">Create a team</Link>
         </p>
+        <p className="auth-switch">
+          Admin? <Link to="/admin/login">Admin sign in</Link>
+        </p>
       </section>
     </main>
   );

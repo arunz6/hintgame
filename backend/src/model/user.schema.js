@@ -16,7 +16,11 @@ const teamSchema = new mongoose.Schema(
     members: {
       type: [memberSchema],
       validate: {
-        validator: (v) => v.length >= 2 && v.length <= 5,
+        validator: function (v) {
+          return this.role === "admin"
+            ? v.length === 0
+            : v.length >= 2 && v.length <= 5;
+        },
         message: "Team me 2 se 5 members hone chahiye",
       },
     },
@@ -70,6 +74,10 @@ teamSchema.set("toJSON", {
 teamSchema.index(
   { teamName: 1 },
   { unique: true, collation: { locale: "en", strength: 2 } }
+);
+teamSchema.index(
+  { role: 1 },
+  { unique: true, partialFilterExpression: { role: "admin" } }
 );
 
 // Leaderboard: finished teams time se, baaki level aur lastSolvedAt se

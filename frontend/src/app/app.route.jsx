@@ -6,6 +6,8 @@ import Login from "../features/auth/Login.jsx";
 import Question from "../features/questionot/Question.jsx";
 import Register from "../features/auth/Register.jsx";
 import AddQuestions from "../features/addquestions/addquestions.jsx";
+import AdminLogin from "../features/auth/AdminLogin.jsx";
+import AdminRegister from "../features/auth/AdminRegister.jsx";
 
 function RequireAuth() {
   let isAuthenticated = false;
@@ -39,6 +41,8 @@ function AppRoutes() {
       <Route path="/" element={<Navigate to="/login" replace />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
+      <Route path="/admin/login" element={<AdminLogin />} />
+      <Route path="/admin/register" element={<AdminRegister />} />
       <Route element={<RequireAuth />}>
         <Route path="/levels" element={<Level />} />
         <Route path="/question" element={<Question />} />

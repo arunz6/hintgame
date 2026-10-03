@@ -1,4 +1,4 @@
-import "dotenv/config";
+import "./src/config/env.js";
 import { createServer } from "node:http";
 import mongoose from "mongoose";
 import app from "./src/app.js";

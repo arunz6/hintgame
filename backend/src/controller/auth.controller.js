@@ -79,6 +79,59 @@ export async function registerTeam(req, res) {
 	}
 }
 
+export async function registerAdmin(req, res) {
+	try {
+		const { teamName, teamCode, password } = req.body ?? {};
+		if (
+			typeof teamName !== "string" ||
+			typeof teamCode !== "string" ||
+			typeof password !== "string"
+		) {
+			return res.status(400).json({
+				message: "teamName, teamCode, and password are required.",
+			});
+		}
+
+		if (password.length < 8) {
+			return res.status(400).json({ message: "Password must be at least 8 characters." });
+		}
+
+		const normalizedTeamName = teamName.trim();
+		const normalizedTeamCode = teamCode.trim().toUpperCase();
+		if (!normalizedTeamName || !normalizedTeamCode) {
+			return res.status(400).json({ message: "Team name and team code cannot be empty." });
+		}
+
+		if (await Team.exists({ role: "admin" })) {
+			return res.status(409).json({ message: "The admin account has already been created." });
+		}
+
+		await Team.create({
+			teamName: normalizedTeamName,
+			teamCode: normalizedTeamCode,
+			password,
+			role: "admin",
+			members: [],
+		});
+
+		return res.status(201).json({
+			message: "Admin account created. Sign in with your admin team code and password.",
+		});
+	} catch (error) {
+		if (error.code === 11000) {
+			if (error.keyPattern?.role) {
+				return res.status(409).json({ message: "The admin account has already been created." });
+			}
+			return res.status(409).json({ message: "Team name or team code is already registered." });
+		}
+		if (error.name === "ValidationError") {
+			return res.status(400).json({ message: error.message });
+		}
+		console.error("Admin registration failed:", error);
+		return res.status(500).json({ message: "Could not create admin account." });
+	}
+}
+
 export async function loginTeam(req, res) {
 	try {
 		const { teamCode, teamName, password } = req.body ?? {};
@@ -118,6 +171,3 @@ export async function loginTeam(req, res) {
 		return res.status(500).json({ message: "Could not log in." });
 	}
 }
-
-
-
