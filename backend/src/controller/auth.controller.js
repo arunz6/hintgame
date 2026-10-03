@@ -7,6 +7,7 @@ const publicTeam = (team) => ({
 	teamName: team.teamName,
 	teamCode: team.teamCode,
 	members: team.members,
+	role: team.role,
 	status: team.status,
 	currentLevel: team.currentLevel,
 	createdAt: team.createdAt,

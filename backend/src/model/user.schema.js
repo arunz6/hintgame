@@ -11,6 +11,7 @@ const teamSchema = new mongoose.Schema(
     teamName: { type: String, required: true, trim: true }, // unique index neeche (case-insensitive)
     teamCode: { type: String, required: true, unique: true, uppercase: true, trim: true }, // login ID
     password: { type: String, required: true, select: false },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
 
     members: {
       type: [memberSchema],

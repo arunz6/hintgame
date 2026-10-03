@@ -40,3 +40,11 @@ export async function requireAuth(req, res, next) {
 	req.team = team;
 	return next();
 }
+
+export function requireAdmin(req, res, next) {
+	if (req.team?.role !== "admin") {
+		return res.status(403).json({ message: "Admin access required." });
+	}
+
+	return next();
+}
