@@ -118,3 +118,6 @@ export async function loginTeam(req, res) {
 		return res.status(500).json({ message: "Could not log in." });
 	}
 }
+
+
+
